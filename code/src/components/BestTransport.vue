@@ -32,6 +32,11 @@
                 </b-form-group>
 
                 <b-button type="submit" variant="primary">Analisar</b-button>
+
+                <b-modal ref="modal" hide-header hide-footer>
+                    <p>Insira os valores para realizar a análise.</p>
+                    <b-button variant="primary" @click="$refs.modal.hide()">Fechar</b-button>
+                </b-modal>
             </b-form>
 
             <div v-if="showResult">
@@ -42,6 +47,8 @@
                 <b-card title="Mais barato" class="mb-3">
                     <p class="card-text">Cost: {{ costCheapest }}</p>
                 </b-card>
+
+                <b-button @click="clearForm" variant="primary">Limpar</b-button>
             </div>
         </div>
     </div>
@@ -90,8 +97,11 @@ export default {
         },
         onSubmit(event) {
             event.preventDefault();
-            console.log("destination:", this.destination);
-            console.log("weight:", this.weight);
+
+            if (!this.destination || !this.weight) {
+                this.$refs.modal.show(); // Show the modal
+                return;
+            }
 
             let custoFinal = Infinity;
             let fastestLeadTime = Infinity;
@@ -142,6 +152,13 @@ export default {
                     ) * parseFloat(this.weight);
             }
             this.showResult = true;
+        },
+        clearForm() {
+            this.destination = "";
+            this.weight = "";
+            this.showResult = false;
+            this.costCheapest = 0;
+            this.costFastest = 0;
         },
         methodFoo() {
             console.log(this.appName);
