@@ -34,7 +34,7 @@
                 <b-button type="submit" variant="primary">Analisar</b-button>
             </b-form>
 
-            <div>
+            <div v-if="showResult">
                 <b-card title="Mais rápido" class="mb-3">
                     <p class="card-text">Cost: {{ costFastest }}</p>
                 </b-card>
@@ -66,6 +66,7 @@ export default {
             weight: "",
             costFastest: 0,
             costCheapest: 0,
+            showResult: false,
         };
     },
     created() {
@@ -140,6 +141,7 @@ export default {
                         fastestTransport.cost_transport_heavy.replace("R$ ", "")
                     ) * parseFloat(this.weight);
             }
+            this.showResult = true;
         },
         methodFoo() {
             console.log(this.appName);
