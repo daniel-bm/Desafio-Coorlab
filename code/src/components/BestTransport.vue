@@ -2,13 +2,17 @@
     <div class="title">
         <b-navbar toggleable="lg" type="dark" variant="info">
             <b-navbar-brand class="ml-2">
-                <b>{{ appName }}</b>
             </b-navbar-brand>
         </b-navbar>
 
-        <b-container class="mainContainer">
+        <b-container class="main-container">
             <b-row>
-                <b-col class="col col-4">
+                <b-navbar toggleable="lg" type="dark" variant="info">
+                    <b-navbar-brand class="ml-2">
+                        <b>{{ appName }}</b>
+                    </b-navbar-brand>
+                </b-navbar>
+                <b-col class="form-col col col-4">
                     <h4>Insira o destino e o peso</h4>
                     <b-form @submit="onSubmit">
                         <b-form-group
@@ -20,6 +24,7 @@
                                 v-model="destination"
                                 :options="cityOptions"
                                 placeholder="Selecione o destino"
+                                class="form-input"
                             ></b-form-select>
                         </b-form-group>
 
@@ -32,17 +37,25 @@
                                 id="weight"
                                 v-model="weight"
                                 placeholder="Peso da carga em kg"
+                                class="form-input"
                             ></b-form-input>
                         </b-form-group>
 
-                        <b-button
-                            class="analyzeBotton"
-                            type="submit"
-                            variant="primary"
-                            >Analisar</b-button
-                        >
+                        <div class="center-button">
+                            <b-button
+                                class="analyze-button"
+                                type="submit"
+                                variant="primary"
+                                >Analisar</b-button
+                            >
+                        </div>
 
-                        <b-modal ref="modal" hide-header hide-footer>
+                        <b-modal
+                            ref="modal"
+                            hide-header
+                            hide-footer
+                            class="custom-modal"
+                        >
                             <p>Insira os valores para realizar a análise.</p>
                             <b-button
                                 variant="primary"
@@ -54,7 +67,10 @@
                 </b-col>
 
                 <b-col class="col col-8" v-if="showResult">
-                  <h4>Estas são as melhores alternativas de frete que encontramos para você.</h4>
+                    <h4>
+                        Estas são as melhores alternativas de frete que
+                        encontramos para você.
+                    </h4>
                     <b-card
                         title="Frete com menor valor"
                         class="mb-3 cardContainer"
@@ -70,7 +86,10 @@
                         <p>Tempo estimado: {{ fastestTime }}</p>
                     </b-card>
 
-                    <b-button @click="clearForm" variant="primary"
+                    <b-button
+                        @click="clearForm"
+                        variant="primary"
+                        class="clear-button"
                         >Limpar</b-button
                     >
                 </b-col>
@@ -205,18 +224,55 @@ export default {
 
 <style scoped>
 .title .navbar {
-    background-color: #00aca6 !important;
+    background-color: #316982 !important;
 }
 
 .title .navbar-brand {
     margin-left: 20px;
 }
 
-.mainContainer {
+.main-container {
+    height: 640px;
     margin-top: 40px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
 }
 
-.analyzeBotton {
+.center-button {
+    display: flex;
+    justify-content: center;
+}
+.analyze-button {
     margin-top: 10px;
+    background-color: #93b5c0;
+    padding: 5px 40px;
+    border: none;
+    color: black;
+}
+
+.clear-button {
+    margin-top: 10px;
+    background-color: #93b5c0;
+    padding: 5px 40px;
+    border: none;
+    color: black;
+}
+
+.custom-modal .modal-dialog {
+    border-radius: 10px;
+    max-width: 600px;
+    width: 100%;
+    margin: 1.75rem auto;
+}
+
+.form-input {
+    width: 100%;
+}
+
+.form-col {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 540px;
+    background-color: #efeff2;
 }
 </style>
