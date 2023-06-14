@@ -6,51 +6,76 @@
             </b-navbar-brand>
         </b-navbar>
 
-        <div
-            class="d-flex justify-content-center align-items-center"
-            style="height: 100vh"
-        >
-            <b-form @submit="onSubmit">
-                <b-form-group
-                    id="destinationInput"
-                    label="Destino"
-                    label-for="destination"
-                >
-                    <b-form-select
-                        v-model="destination"
-                        :options="cityOptions"
-                        placeholder="Selecione o destino"
-                    ></b-form-select>
-                </b-form-group>
+        <b-container class="mainContainer">
+            <b-row>
+                <b-col class="col col-4">
+                    <h4>Insira o destino e o peso</h4>
+                    <b-form @submit="onSubmit">
+                        <b-form-group
+                            id="destinationInput"
+                            label="Destino"
+                            label-for="destination"
+                        >
+                            <b-form-select
+                                v-model="destination"
+                                :options="cityOptions"
+                                placeholder="Selecione o destino"
+                            ></b-form-select>
+                        </b-form-group>
 
-                <b-form-group id="weightInput" label="Peso" label-for="weight">
-                    <b-form-input
-                        id="weight"
-                        v-model="weight"
-                        placeholder="Peso da carga em kg"
-                    ></b-form-input>
-                </b-form-group>
+                        <b-form-group
+                            id="weightInput"
+                            label="Peso"
+                            label-for="weight"
+                        >
+                            <b-form-input
+                                id="weight"
+                                v-model="weight"
+                                placeholder="Peso da carga em kg"
+                            ></b-form-input>
+                        </b-form-group>
 
-                <b-button type="submit" variant="primary">Analisar</b-button>
+                        <b-button
+                            class="analyzeBotton"
+                            type="submit"
+                            variant="primary"
+                            >Analisar</b-button
+                        >
 
-                <b-modal ref="modal" hide-header hide-footer>
-                    <p>Insira os valores para realizar a análise.</p>
-                    <b-button variant="primary" @click="$refs.modal.hide()">Fechar</b-button>
-                </b-modal>
-            </b-form>
+                        <b-modal ref="modal" hide-header hide-footer>
+                            <p>Insira os valores para realizar a análise.</p>
+                            <b-button
+                                variant="primary"
+                                @click="$refs.modal.hide()"
+                                >Fechar</b-button
+                            >
+                        </b-modal>
+                    </b-form>
+                </b-col>
 
-            <div v-if="showResult">
-                <b-card title="Mais rápido" class="mb-3">
-                    <p class="card-text">Cost: {{ costFastest }}</p>
-                </b-card>
+                <b-col class="col col-8" v-if="showResult">
+                  <h4>Estas são as melhores alternativas de frete que encontramos para você.</h4>
+                    <b-card
+                        title="Frete com menor valor"
+                        class="mb-3 cardContainer"
+                    >
+                        <p>Nome: {{ cheapestName }}</p>
+                        <p>Preço: R$ {{ costCheapest }}</p>
+                        <p>Tempo estimado: {{ cheapestTime }}</p>
+                    </b-card>
 
-                <b-card title="Mais barato" class="mb-3">
-                    <p class="card-text">Cost: {{ costCheapest }}</p>
-                </b-card>
+                    <b-card title="Frete mais rápido" class="mb-3">
+                        <p>Nome: {{ fastestName }}</p>
+                        <p>Preço: R$ {{ costFastest }}</p>
+                        <p>Tempo estimado: {{ fastestTime }}</p>
+                    </b-card>
 
-                <b-button @click="clearForm" variant="primary">Limpar</b-button>
-            </div>
-        </div>
+                    <b-button @click="clearForm" variant="primary"
+                        >Limpar</b-button
+                    >
+                </b-col>
+            </b-row>
+        </b-container>
     </div>
 </template>
 
@@ -74,6 +99,10 @@ export default {
             costFastest: 0,
             costCheapest: 0,
             showResult: false,
+            fastestTime: 0,
+            cheapestTime: 0,
+            fastestName: "",
+            cheapestName: "",
         };
     },
     created() {
@@ -106,6 +135,7 @@ export default {
             let custoFinal = Infinity;
             let fastestLeadTime = Infinity;
             let fastestTransport = null;
+            let cheapestTransport = null;
 
             for (const transport of this.data) {
                 if (this.destination === transport.city) {
@@ -129,6 +159,7 @@ export default {
 
                     if (currentCost < custoFinal) {
                         custoFinal = currentCost;
+                        cheapestTransport = transport;
                     }
 
                     if (leadTime < fastestLeadTime) {
@@ -151,6 +182,11 @@ export default {
                         fastestTransport.cost_transport_heavy.replace("R$ ", "")
                     ) * parseFloat(this.weight);
             }
+            this.fastestName = fastestTransport.name;
+            this.cheapestName = cheapestTransport.name;
+
+            this.fastestTime = fastestTransport.lead_time;
+            this.cheapestTime = cheapestTransport.lead_time;
             this.showResult = true;
         },
         clearForm() {
@@ -174,5 +210,13 @@ export default {
 
 .title .navbar-brand {
     margin-left: 20px;
+}
+
+.mainContainer {
+    margin-top: 40px;
+}
+
+.analyzeBotton {
+    margin-top: 10px;
 }
 </style>
